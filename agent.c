@@ -28,7 +28,7 @@ void playPD(Agent *agent1, Agent *agent2, float opportunityCost){
   agent2->cooperated = uniformRandZeroOne() < agent2->trustworthiness;
 
   float payoutAgent1, payoutAgent2;
-  if (!agent1->trusted || ! agent2->trusted){
+  if (!agent1->trusted || !agent2->trusted){
     payoutAgent1 = EXIT_PAYOFF_X;
     payoutAgent2 = EXIT_PAYOFF_X;
   }else{
@@ -51,11 +51,11 @@ void playPD(Agent *agent1, Agent *agent2, float opportunityCost){
   agent1->totalPayout += payoutAgent1;
   agent2->totalPayout += payoutAgent2;
 
-  reinforcementLearning(agent1,payoutAgent1);
-  reinforcementLearning(agent2,payoutAgent2);
+  reinforcementLearning(agent1,payoutAgent1,agent1->trusted  && agent2->trusted );
+  reinforcementLearning(agent2,payoutAgent2,agent1->trusted  && agent2->trusted );
 }
 
-void reinforcementLearning(Agent *agent, float payout){
+void reinforcementLearning(Agent *agent, float payout, bool played){
   if (agent->inMarket){
     reinforcementLearningOneVariable(&(agent->location), payout);
   }else{
@@ -68,10 +68,12 @@ void reinforcementLearning(Agent *agent, float payout){
     reinforcementLearningOneVariable(&(agent->trust), payout * (-1));
   }
 
-  if (agent->cooperated){
-    reinforcementLearningOneVariable(&(agent->trustworthiness), payout);
-  }else{
-    reinforcementLearningOneVariable(&(agent->trustworthiness), payout * (-1));
+  if (played) {
+    if (agent->cooperated){
+      reinforcementLearningOneVariable(&(agent->trustworthiness), payout);
+    }else{
+      reinforcementLearningOneVariable(&(agent->trustworthiness), payout * (-1));
+    }
   }
 }
 

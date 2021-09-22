@@ -29,7 +29,7 @@ typedef struct Agent {
 Agent createAgent();
 float uniformRandZeroOne();
 void playPD(Agent *agent1, Agent *agent2, float opportunityCost);
-void reinforcementLearning(Agent *agent, float payout);
+void reinforcementLearning(Agent *agent, float payout, bool played);
 void reinforcementLearningOneVariable(float *variable, float payout);
 
 #endif
